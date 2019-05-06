@@ -12,10 +12,9 @@ class ViewControllerTableViewCell: UITableViewCell {
 
     @IBOutlet weak var MyLabel: UILabel!
     @IBOutlet weak var myImage: UIImageView!
-    
     @IBOutlet weak var myLabelQuant: UILabel!
-    @IBOutlet weak var myButtonAdd: UIButton!
     
+    @IBOutlet weak var myButtonAddFirst: UIButton!
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
@@ -27,4 +26,10 @@ class ViewControllerTableViewCell: UITableViewCell {
         // Configure the view for the selected state
     }
 
+}
+
+protocol ProductTableViewCellDelegate:class{
+    func productTapInAdd(id:Int,indexPath:IndexPath)
+    func productTapInRemove(id:Int,indexPath:IndexPath)
+    func productTapInPlus(id:Int,indexPath:IndexPath)
 }
