@@ -31,32 +31,40 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //let veggies = [SupermarketItem]()
     var searchedItem = [String]()
     var prueba = [String]()
+    var keys = [String]()
     var searching = false
     //var items = [SupermarketItem]()
-    //var currentItems = [SupermarketItem]()
+    var currentItems = [SupermarketItem]()
     var elementInCart=[String:Int]()
     
-    //private func setUpItems() {
+    private func setUpItems() {
         // Fruits
-      //  items.append(SupermarketItem(quantity:0, price:30, name: "kiwi", category: .fruits))
-      //  items.append(SupermarketItem(quantity:0, price:30, name: "Watermelon", category: .fruits))
-       // items.append(SupermarketItem(quantity:0, price:45, name: "Grapefruit", category: .fruits))
+        currentItems.append(SupermarketItem(quantity:0, price:30, name: "kiwi"))
+        currentItems.append(SupermarketItem(quantity:0, price:45, name: "Watermelon"))
+        currentItems.append(SupermarketItem(quantity:0, price:45, name: "Grapefruit"))
         // Veggies
-       // items.append(SupermarketItem(quantity:0, price:30, name: "Avocado", category: .veggies))
-        //items.append(SupermarketItem(quantity:0, price:45, name: "Cucumber", category: .veggies))
+        currentItems.append(SupermarketItem(quantity:0, price:30, name: "Avocado"))
+        currentItems.append(SupermarketItem(quantity:0, price:30, name: "Cucumber"))
 
         
         //currentItems = items
-    //}
+    }
     
-    //let kiwi = SupermarketItem (quantity: 0, price: 30,name: "kiwi")
-    //let watermelon = SupermarketItem (quantity: 0, price: 45,name: "watermelon")
-    //let grapefruit = SupermarketItem (quantity: 0, price: 45,name: "grapefruit")
+    let kiwi = SupermarketItem (quantity: 0, price: 30,name: "kiwi")
+    let watermelon = SupermarketItem (quantity: 0, price: 45,name: "watermelon")
+    let grapefruit = SupermarketItem (quantity: 0, price: 45,name: "grapefruit")
+    let avocado = SupermarketItem (quantity: 0, price: 30,name: "avocado")
+    let cucumber = SupermarketItem (quantity: 0, price: 30,name: "cucumber")
+    
     
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        return self.sections[section]
-        //return currentItems[section].category.rawValue
+        
+        if searching {
+            return ""
+        } else {
+            return self.sections[section]
+        }
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
@@ -85,12 +93,14 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         
         if searching {
             cell.MyLabel.text = searchedItem[indexPath.row]
+            cell.MyLabelPrice.text = "$"+String(currentItems[indexPath.row].price)
+            cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2
             cell.myImage.image = UIImage(named : (searchedItem[indexPath.row] + ".png"))
-            cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2.0
         } else {
             cell.MyLabel.text = items[indexPath.section]?[indexPath.row]
+            cell.MyLabelPrice.text = "$"+String(currentItems[indexPath.row].price)
+            cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2
             cell.myImage.image = UIImage(named : ((items[indexPath.section]?[indexPath.row])! + ".png"))
-            cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2.0
             
         }
         return cell
@@ -134,7 +144,12 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     //}
     
     public func numberOfSections(in tableView: UITableView) -> Int{
-        return(sections.count)
+        //return(sections.count)
+        if searching {
+            return 1
+        } else {
+            return(sections.count)
+        }
     }
     
     @objc func changeImage(){
@@ -165,7 +180,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     override func viewDidLoad() {
         super.viewDidLoad()
         //setUpSearchBar()
-        //setUpItems()
+        setUpItems()
         LoadItems()
         searchBar.delegate = self
         myTableView.delegate = self

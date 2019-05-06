@@ -11,6 +11,7 @@ import UIKit
 class ViewControllerTableViewCell: UITableViewCell {
 
     @IBOutlet weak var MyLabel: UILabel!
+    @IBOutlet weak var MyLabelPrice: UILabel!
     @IBOutlet weak var myImage: UIImageView!
     @IBOutlet weak var myLabelQuant: UILabel!
     

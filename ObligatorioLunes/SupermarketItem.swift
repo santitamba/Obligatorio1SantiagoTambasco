@@ -11,19 +11,19 @@ class SupermarketItem{
     var quantity : Int
     let price : Int
     let name: String
-    let category: CategoryType
+    //let category: CategoryType
     //let image: String
     
-    init(quantity: Int, price: Int, name:String , category:CategoryType /*, image:String*/) {
+    init(quantity: Int, price: Int, name:String /*, category:CategoryType , image:String*/) {
         self.quantity = quantity
         self.price = price
         self.name = name
-        self.category = category
+        //self.category = category
        // self.image = image
     }
     
 }
-enum CategoryType:String{
+/*enum CategoryType:String{
     case fruits = "Fruit"
     case veggies = "Veggies"
-}
+}*/
