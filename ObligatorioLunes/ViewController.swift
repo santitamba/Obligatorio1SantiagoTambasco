@@ -8,7 +8,9 @@
 
 import UIKit
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,ProductTableViewCellDelegate {
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,ViewControllerTableViewCellDelegate {
+
+    
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -18,24 +20,25 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
     
     @IBOutlet weak var pageView: UIPageControl!
     
+    @IBAction func ClickCartButton(_ sender: Any) {
+        self.performSegue(withIdentifier: "SecondViewSegue", sender: self)
+    }
+    @IBAction func CartButton(_ sender: UIBarButtonItem) {
+        self.performSegue(withIdentifier: "SecondViewSegue", sender: self)
+    }
     
     var imgArr=[UIImage(named:"Banner-1"),UIImage(named:"Banner-2"),UIImage(named:"Banner-3"),UIImage(named:"Banner-4")]
     var timer=Timer()
     var counter=0
     let sections=["fruits","veggies"]
-    //let items=[["kiwi","Watermelon","Grapefruit"],
-    //["Avocado","Cucumber"]]
     let items = [0 : ["kiwi","Watermelon","Grapefruit"], 1:["Avocado","Cucumber"]]
-    //var currentSection[]()
-    //let fruits = [SupermarketItem]()
-    //let veggies = [SupermarketItem]()
     var searchedItem = [String]()
     var prueba = [String]()
     var keys = [String]()
     var searching = false
-    //var items = [SupermarketItem]()
     var currentItems = [SupermarketItem]()
-    var elementInCart=[String:Int]()
+    //var elementInCart=[String:Int]() //Producto:cantidad
+    var elementInCart=["kiwi" : 0,"Watermelon" : 0,"Grapefruit" : 0,"Avocado" : 0,"Cucumber" : 0]
     
     private func setUpItems() {
         // Fruits
@@ -45,6 +48,7 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // Veggies
         currentItems.append(SupermarketItem(quantity:0, price:30, name: "Avocado"))
         currentItems.append(SupermarketItem(quantity:0, price:30, name: "Cucumber"))
+        // Fruits
 
         
         //currentItems = items
@@ -74,14 +78,6 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         } else {
             return(items[section]!.count)
         }
-        //return(currentItems[section].category.rawValue.count)
-        //if(currentItems[section].category.rawValue=="Fruit"){
-         //   print (currentItems[section].category.rawValue)
-          //  return(fruits.count)
-        //}else{
-         //   print(currentItems[section].category.rawValue)
-          //  return(veggies.count)
-        //}
     }
     // func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
     //   return 100
@@ -96,52 +92,19 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
             cell.MyLabelPrice.text = "$"+String(currentItems[indexPath.row].price)
             cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2
             cell.myImage.image = UIImage(named : (searchedItem[indexPath.row] + ".png"))
+            cell.myLabelQuant.text=String(currentItems[indexPath.row].quantity)
+            
         } else {
             cell.MyLabel.text = items[indexPath.section]?[indexPath.row]
             cell.MyLabelPrice.text = "$"+String(currentItems[indexPath.row].price)
             cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2
             cell.myImage.image = UIImage(named : ((items[indexPath.section]?[indexPath.row])! + ".png"))
+            cell.myLabelQuant.text=String(currentItems[indexPath.row].quantity)
             
         }
         return cell
-        
-        /*
-        //cell.myImage.image = UIImage(named : (currentItems[indexPath.section][indexPath.row] + ".png"))
-        cell.myImage.image = UIImage(named : (currentItems[indexPath.section][indexPath.row].description + ".png"))
-        cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2.0
-        //print (cell.myImage.frame)
-        //cell.MyLabel.text = currentItems[indexPath.section][indexPath.row]
-        cell.MyLabel.text = currentItems[indexPath.section][indexPath.row].description
-        print (currentItems[indexPath.section][indexPath.row].description)
-        //currentItems[indexPath.section]=currentItems[indexPath.row].category
-        //cell.myLabelQuant.text=String(kiwi.quantity);
-        return(cell)
-        */
     }
-    
-    //Search Bar
-    //private func setUpSearchBar(){
-     //   searchBar.delegate = self
-   // }
-    
-  /*  func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        guard !searchText.isEmpty else {
-            currentItems = items
-            myTableView.reloadData()
-            return
-            
-        }
-        currentItems=items.filter({ item -> Bool in
-            item.name.uppercased().contains(searchText.uppercased())
-        })
-        myTableView.reloadData()
-    }*/
-    
-    
-    
-    // func searchBar(_ searchBar: UISearchBar, selectedScopeButtonIndexDidChange selectedScope: Int) {
-    //  <#code#>
-    //}
+ 
     
     public func numberOfSections(in tableView: UITableView) -> Int{
         //return(sections.count)
@@ -199,27 +162,37 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         // Dispose of any resources that can be recreated.
     }
     
-    func productTapInAdd(id: Int, indexPath: IndexPath) {
-        //let itemSelected=items[indexPath.section]
-        //itemSelected.quantity=1
-        //print(itemSelected)
+    func productTapInAdd(indexPath: IndexPath) {
+        //if let cell = self.tableView.cellForRow(at: indexPath) as? ViewControllerTableViewCell{
+        //    cell.isInCart=true
+       // }
+        let itemSelected = currentItems[indexPath.row]
+        //elementInCart
+        itemSelected.quantity=1
+        print(itemSelected.name)
+        //elementInCart[id]=itemSelected
+        //elementInCart[id]=productSelected
+        myTableView.reloadData()
+        
+    }
+    func productTapInRemove(indexPath: IndexPath) {
+        let itemSelected = currentItems[indexPath.row]
+        //elementInCart
+        itemSelected.quantity=itemSelected.quantity-1
+        print(itemSelected.name)
+        //elementInCart[id]=itemSelected
+        //elementInCart[id]=productSelected
+        myTableView.reloadData()
     }
     
-    func productTapInRemove(id: Int, indexPath: IndexPath) {
-        print ("hola")
-    }
-    
-    func productTapInPlus(id: Int, indexPath: IndexPath) {
-        print ("hola")
-    }
-    
-    
-    @IBAction func RemoveItemButton(_ sender: UIButton) {
-        //kiwi.quantity=kiwi.quantity-1
-        //print (kiwi.quantity)
-    }
-    @IBAction func AddItemButton(_ sender: UIButton) {
-        //kiwi.quantity=kiwi.quantity+1
+    func productTapInPlus(indexPath: IndexPath) {
+        let itemSelected = currentItems[indexPath.row]
+        //elementInCart
+        itemSelected.quantity=itemSelected.quantity+1
+        print(itemSelected.name)
+        //elementInCart[id]=itemSelected
+        //elementInCart[id]=productSelected
+        myTableView.reloadData()
     }
     
 }
@@ -262,27 +235,6 @@ extension ViewController:UICollectionViewDelegateFlowLayout{
     }
 }
 extension ViewController: UISearchBarDelegate {
-    /*
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        if searchBar.text == " "{
-            searching = false
-            myTableView.reloadData()
-        }
-        searchedItem = items.values.filter({ item -> Bool in
-            item.lowercased().contains(searchText.lowercased())
-            //searchedItem = items.values.filter({$0.lowercased().prefix(searchText.count) == searchText.lowercased()})
-           // searching = true
-            myTableView.reloadData()
-
-        //for a in items{
-        //searchedItem = a.filter({ item -> Bool in
-         //   item.lowercased().contains(searchText.lowercased())
-        })
-
-        //}
-    }*/
-    
-
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         
@@ -296,34 +248,6 @@ extension ViewController: UISearchBarDelegate {
         searching = true
         myTableView.reloadData()
         }
-        
-        
-       /*
-        for (key, value) in items {
-            //print("The value to '\(key)' is '\(value)'.")
-            for a in value{
-                //print (a)
-                prueba.append(a)
-            }
-            guard !searchText.isEmpty else {
-                searchedItem = prueba
-                myTableView.reloadData()
-                return
-            
-            }
-            print (prueba)
-            searchedItem=prueba.filter{ $0.lowercased().contains(searchText.lowercased()) }
-            myTableView.reloadData()
-        }
-        //guard !searchText.isEmpty else {
-         //   searchedItem = items
-          //  myTableView.reloadData()
-           // return
-            
-        //}
-        //searchedItem=items.filter{ $0.lowercased().contains(searchText.lowercased()) }
-        //myTableView.reloadData()
-  */
     }
 
     
