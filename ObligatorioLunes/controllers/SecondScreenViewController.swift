@@ -7,7 +7,20 @@
 //
 
 import UIKit
-class SecondScreenViewController: UIViewController{
+class SecondScreenViewController: UIViewController, UICollectionViewDelegate,UICollectionViewDataSource{
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return elements.count
+    }
+        
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        guard let cellSecondView=collectionView.dequeueReusableCell(withReuseIdentifier: "cellSecondView", for: indexPath) as? ViewControllerSeconViewCell else { return UICollectionViewCell()}
+       
+        cellSecondView.item = elements[indexPath.row]
+        cellSecondView.configure()
+        
+        return cellSecondView
+    }
+    
     
     @IBAction func TapImageButton(_ sender: UIButton) {
         print("hola")
