@@ -16,6 +16,9 @@ class SecondScreenViewController: UIViewController, UICollectionViewDelegate,UIC
         guard let cellSecondView=collectionView.dequeueReusableCell(withReuseIdentifier: "cellSecondView", for: indexPath) as? ViewControllerSeconViewCell else { return UICollectionViewCell()}
        
         cellSecondView.item = elements[indexPath.row]
+        if elements.count>0{
+            ChechoutButton.isEnabled=true
+        }
         cellSecondView.configure()
         
         return cellSecondView
