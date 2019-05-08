@@ -23,14 +23,21 @@ class ViewControllerTableViewCell: UITableViewCell {
     
     @IBAction func myButtonAdd(_ sender: UIButton) {
         changeStepperVisible()
+        item.quantity = 1
+        updateLabel()
     }
     @IBAction func myButtonPlus(_ sender: UIButton) {
         item.quantity = item.quantity + 1
         updateLabel()
     }
     @IBAction func myButtonMinus(_ sender: UIButton) {
-        item.quantity = item.quantity - 1
-        updateLabel()
+        if item.quantity == 0{
+            changeStepperInVisible()
+        }
+        else{
+            item.quantity = item.quantity - 1
+            updateLabel()
+        }
     }
     
     override func awakeFromNib() {
@@ -74,6 +81,11 @@ class ViewControllerTableViewCell: UITableViewCell {
     public func changeStepperVisible() {
         self.stepperView.isHidden = !self.stepperView.isHidden
         self.myButtonAddFirst.isHidden = !self.myButtonAddFirst.isHidden
+    }
+
+    public func changeStepperInVisible() {
+        self.stepperView.isHidden = true
+        self.myButtonAddFirst.isHidden = false
     }
 
     
