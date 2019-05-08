@@ -377,6 +377,7 @@
                     </view>
                     <connections>
                         <outlet property="ChechoutButton" destination="JI9-Bm-kKT" id="Ycn-SY-Ox1"/>
+                        <outlet property="TotalPriceLabel" destination="csM-Pd-rCy" id="oLx-ah-kvG"/>
                         <segue destination="BYZ-38-t0r" kind="showDetail" identifier="FirstViewSegue" id="neY-Pu-qA1"/>
                     </connections>
                 </viewController>

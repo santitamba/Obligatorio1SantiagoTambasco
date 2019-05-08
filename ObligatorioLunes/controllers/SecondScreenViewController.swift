@@ -8,6 +8,8 @@
 
 import UIKit
 class SecondScreenViewController: UIViewController, UICollectionViewDelegate,UICollectionViewDataSource{
+    @IBOutlet var ChechoutButton: UIButton!
+    @IBOutlet var TotalPriceLabel: UILabel!
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return elements.count
     }
@@ -16,6 +18,11 @@ class SecondScreenViewController: UIViewController, UICollectionViewDelegate,UIC
         guard let cellSecondView=collectionView.dequeueReusableCell(withReuseIdentifier: "cellSecondView", for: indexPath) as? ViewControllerSeconViewCell else { return UICollectionViewCell()}
        
         cellSecondView.item = elements[indexPath.row]
+        for element in elements{
+            let itemPrice = Double(element.quantity) * Double(element.price)
+            totalPrice = totalPrice + itemPrice
+        }
+        TotalPriceLabel.text = "$" + String(totalPrice)
         if elements.count>0{
             ChechoutButton.isEnabled=true
         }
@@ -28,7 +35,6 @@ class SecondScreenViewController: UIViewController, UICollectionViewDelegate,UIC
     @IBAction func TapImageButton(_ sender: UIButton) {
         print("hola")
     }
-    @IBOutlet var ChechoutButton: UIButton!
 
     @IBAction func CheckOutButtonAction(_ sender: Any) {
         let alert = UIAlertController(title: "Successful", message: "Congratulation for purchase in the Shop",preferredStyle: .alert)
@@ -42,6 +48,8 @@ class SecondScreenViewController: UIViewController, UICollectionViewDelegate,UIC
     let untis=0
     
     var elements=[SupermarketItem]()
+    
+    var totalPrice: Double = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
