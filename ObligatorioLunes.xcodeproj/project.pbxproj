@@ -41,6 +41,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B43AC5F42282582400AC0CBB /* models */ = {
+			isa = PBXGroup;
+			children = (
+				B4EF3523227A343B0019A42A /* SupermarketItem.swift */,
+			);
+			path = models;
+			sourceTree = "<group>";
+		};
 		B4E6A2472277EE5400862A64 = {
 			isa = PBXGroup;
 			children = (
@@ -64,7 +72,7 @@
 				B4E6A2552277EE5400862A64 /* ViewController.swift */,
 				B4BC843E2280ED2A003A52D9 /* SecondScreenViewController.swift */,
 				B4E6A2572277EE5400862A64 /* Main.storyboard */,
-				B4EF3523227A343B0019A42A /* SupermarketItem.swift */,
+				B43AC5F42282582400AC0CBB /* models */,
 				B4E6A25A2277EE5400862A64 /* Assets.xcassets */,
 				B4E6A25C2277EE5400862A64 /* LaunchScreen.storyboard */,
 				B4E6A25F2277EE5400862A64 /* Info.plist */,

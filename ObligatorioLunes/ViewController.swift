@@ -8,9 +8,7 @@
 
 import UIKit
 
-class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource,ViewControllerTableViewCellDelegate {
-
-    
+class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource {
     
     @IBOutlet weak var searchBar: UISearchBar!
     
@@ -27,92 +25,68 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         self.performSegue(withIdentifier: "SecondViewSegue", sender: self)
     }
     
+
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier=="SecondViewSegue"{
+            if let controller=segue.destination as? SecondScreenViewController{
+                var tempElements0 = currentItems[0].filter({$0.quantity > 0 })
+                let tempElements1 = currentItems[1].filter({$0.quantity > 0 })
+                tempElements0.append(contentsOf: tempElements1)
+                controller.elements = tempElements0
+            }
+        }
+    }
+    
     var imgArr=[UIImage(named:"Banner-1"),UIImage(named:"Banner-2"),UIImage(named:"Banner-3"),UIImage(named:"Banner-4")]
     var timer=Timer()
     var counter=0
     let sections=["fruits","veggies"]
-    let items = [0 : ["kiwi","Watermelon","Grapefruit"], 1:["Avocado","Cucumber"]]
-    var searchedItem = [String]()
-    var prueba = [String]()
-    var keys = [String]()
+    var searchedItem = [[SupermarketItem]]()
     var searching = false
-    var currentItems = [SupermarketItem]()
-    //var elementInCart=[String:Int]() //Producto:cantidad
-    var elementInCart=["kiwi" : 0,"Watermelon" : 0,"Grapefruit" : 0,"Avocado" : 0,"Cucumber" : 0]
+    var currentItems = [[SupermarketItem]]()
     
     private func setUpItems() {
         // Fruits
-        currentItems.append(SupermarketItem(quantity:0, price:30, name: "kiwi"))
-        currentItems.append(SupermarketItem(quantity:0, price:45, name: "Watermelon"))
-        currentItems.append(SupermarketItem(quantity:0, price:45, name: "Grapefruit"))
+        currentItems.append([SupermarketItem(quantity:0, price:30, name: "kiwi", id:1), SupermarketItem(quantity:0, price:45, name: "Watermelon", id:2), SupermarketItem(quantity:0, price:45, name: "Grapefruit", id:3)])
         // Veggies
-        currentItems.append(SupermarketItem(quantity:0, price:30, name: "Avocado"))
-        currentItems.append(SupermarketItem(quantity:0, price:30, name: "Cucumber"))
+        currentItems.append([SupermarketItem(quantity:0, price:30, name: "Avocado", id:4),SupermarketItem(quantity:0, price:30, name: "Cucumber", id:5)])
         // Fruits
-
-        
-        //currentItems = items
     }
-    
-    let kiwi = SupermarketItem (quantity: 0, price: 30,name: "kiwi")
-    let watermelon = SupermarketItem (quantity: 0, price: 45,name: "watermelon")
-    let grapefruit = SupermarketItem (quantity: 0, price: 45,name: "grapefruit")
-    let avocado = SupermarketItem (quantity: 0, price: 30,name: "avocado")
-    let cucumber = SupermarketItem (quantity: 0, price: 30,name: "cucumber")
-    
-    
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
-        if searching {
-            return ""
-        } else {
-            return self.sections[section]
-        }
+        return self.sections[section]
     }
     
     public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int
     {
         if searching {
-            return searchedItem.count
+            return searchedItem[section].count
         } else {
-            return(items[section]!.count)
+            return currentItems[section].count
         }
     }
-    // func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-    //   return 100
-    //}
+     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+       return 80
+    }
     
     public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
     {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath) as! ViewControllerTableViewCell
         
-        if searching {
-            cell.MyLabel.text = searchedItem[indexPath.row]
-            cell.MyLabelPrice.text = "$"+String(currentItems[indexPath.row].price)
-            cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2
-            cell.myImage.image = UIImage(named : (searchedItem[indexPath.row] + ".png"))
-            cell.myLabelQuant.text=String(currentItems[indexPath.row].quantity)
-            
-        } else {
-            cell.MyLabel.text = items[indexPath.section]?[indexPath.row]
-            cell.MyLabelPrice.text = "$"+String(currentItems[indexPath.row].price)
-            cell.myImage.layer.cornerRadius = cell.myImage.frame.width / 2
-            cell.myImage.image = UIImage(named : ((items[indexPath.section]?[indexPath.row])! + ".png"))
-            cell.myLabelQuant.text=String(currentItems[indexPath.row].quantity)
-            
-        }
+        let item = searching ? searchedItem[indexPath.section][indexPath.row] : currentItems[indexPath.section][indexPath.row]
+       
+        cell.item = item
+        
+        cell.configureCell()
+        
         return cell
     }
  
     
     public func numberOfSections(in tableView: UITableView) -> Int{
         //return(sections.count)
-        if searching {
-            return 1
-        } else {
-            return(sections.count)
-        }
+        return 2
     }
     
     @objc func changeImage(){
@@ -130,21 +104,10 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         }
     }
     
-    func LoadItems(){
-        for (key,value) in items {
-            //print("The value to '\(key)' is '\(value)'.")
-            for a in value{
-                //print (a)
-                prueba.append(a)
-            }
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //setUpSearchBar()
-        setUpItems()
-        LoadItems()
+        
         searchBar.delegate = self
         myTableView.delegate = self
         myTableView.dataSource = self
@@ -152,49 +115,15 @@ class ViewController: UIViewController,UITableViewDelegate,UITableViewDataSource
         pageView.currentPage=0
         DispatchQueue.main.async {
             self.timer=Timer.scheduledTimer(timeInterval: 5.0, target: self, selector: #selector(self.changeImage), userInfo: nil, repeats: true)
-            
-            
         }
+        setUpItems()
+        myTableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
-    
-    func productTapInAdd(indexPath: IndexPath) {
-        //if let cell = self.tableView.cellForRow(at: indexPath) as? ViewControllerTableViewCell{
-        //    cell.isInCart=true
-       // }
-        let itemSelected = currentItems[indexPath.row]
-        //elementInCart
-        itemSelected.quantity=1
-        print(itemSelected.name)
-        //elementInCart[id]=itemSelected
-        //elementInCart[id]=productSelected
-        myTableView.reloadData()
-        
-    }
-    func productTapInRemove(indexPath: IndexPath) {
-        let itemSelected = currentItems[indexPath.row]
-        //elementInCart
-        itemSelected.quantity=itemSelected.quantity-1
-        print(itemSelected.name)
-        //elementInCart[id]=itemSelected
-        //elementInCart[id]=productSelected
-        myTableView.reloadData()
-    }
-    
-    func productTapInPlus(indexPath: IndexPath) {
-        let itemSelected = currentItems[indexPath.row]
-        //elementInCart
-        itemSelected.quantity=itemSelected.quantity+1
-        print(itemSelected.name)
-        //elementInCart[id]=itemSelected
-        //elementInCart[id]=productSelected
-        myTableView.reloadData()
-    }
-    
 }
 
 extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource{
@@ -242,11 +171,10 @@ extension ViewController: UISearchBarDelegate {
         {
             searching = false
             myTableView.reloadData()
-            
         }else{
-        searchedItem = prueba.filter({$0.lowercased().prefix(searchText.count) == searchText.lowercased()})
-        searching = true
-        myTableView.reloadData()
+            searchedItem =  [currentItems[0].filter({$0.name.lowercased().prefix(searchText.count) == searchText.lowercased()}), currentItems[1].filter({$0.name.lowercased().prefix(searchText.count) == searchText.lowercased()}) ]
+            searching = true
+            myTableView.reloadData()
         }
     }
 

@@ -25,11 +25,17 @@ class SecondScreenViewController: UIViewController{
     
     let untis=0
     
+    var elements=[SupermarketItem]()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         ChechoutButton.layer.cornerRadius=10
       
     }
+    
+
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.

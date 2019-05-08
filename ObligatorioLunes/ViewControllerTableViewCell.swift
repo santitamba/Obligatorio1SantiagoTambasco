@@ -17,49 +17,52 @@ class ViewControllerTableViewCell: UITableViewCell {
     @IBOutlet weak var myButtonAddFirst: UIButton!
     @IBOutlet var myButtonMinus: UIButton!
     @IBOutlet var myButtonPlus: UIButton!
-    var indexPath : IndexPath?
-    weak var delegate: ViewControllerTableViewCellDelegate?
+    var item : SupermarketItem!
+    @IBOutlet var stepperView: UIView!
+    
     
     @IBAction func myButtonAdd(_ sender: UIButton) {
-        if let index = indexPath{
-            delegate?.productTapInAdd(indexPath: index)
-        }else{
-            print (indexPath)
-        }
+        changeStepperVisible()
     }
     @IBAction func myButtonPlus(_ sender: UIButton) {
-        if let index = indexPath{
-            delegate?.productTapInPlus(indexPath: index)
-        }else{
-            print (indexPath)
-        }
+        item.quantity = item.quantity + 1
+        updateLabel()
     }
     @IBAction func myButtonMinus(_ sender: UIButton) {
-        if let index = indexPath{
-            delegate?.productTapInRemove(indexPath: index)
-        }else{
-            print (indexPath)
-        }
+        item.quantity = item.quantity - 1
+        updateLabel()
     }
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
+        
+    }
+    
+    func configureCell() {
+        if item.quantity > 0 {
+            self.stepperView.isHidden = false
+            self.myButtonAddFirst.isHidden = true
+            updateLabel()
+        } else {
+            self.stepperView.isHidden = true
+            self.myButtonAddFirst.isHidden = false
+        }
+        
+        MyLabel.text = item.name
+        MyLabelPrice.text = "$ " + String(item.price)
+        myImage.image = UIImage(named: item.name)
+        myLabelQuant.text=String(item.quantity)
+    }
+    
+    func updateLabel() {
+        myLabelQuant.text = String(item.quantity)
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
-        myImage.layer.cornerRadius=myImage.frame.width / 2
-        if(self.myLabelQuant.text == "0"){
-            myButtonAddFirst.isHidden = true
-            myLabelQuant.isHidden = false
-            myButtonMinus.isHidden = false
-            myButtonPlus.isHidden = false
-        }else{
-            myButtonAddFirst.isHidden = false
-            myLabelQuant.isHidden = true
-            myButtonMinus.isHidden = true
-            myButtonPlus.isHidden = true
-        }
+        myImage.layer.cornerRadius = myImage.frame.width / 2
+        myImage.layer.masksToBounds = true
     }
     
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -67,12 +70,11 @@ class ViewControllerTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    public func changeStepperVisible() {
+        self.stepperView.isHidden = !self.stepperView.isHidden
+        self.myButtonAddFirst.isHidden = !self.myButtonAddFirst.isHidden
+    }
 
     
-}
-
-protocol ViewControllerTableViewCellDelegate:class{
-    func productTapInAdd(indexPath:IndexPath)
-    func productTapInRemove(indexPath:IndexPath)
-    func productTapInPlus(indexPath:IndexPath)
 }
